@@ -1,10 +1,17 @@
 ﻿using RogueSharp;
 using RLNET;
+using System.Collections.Generic;
 
 namespace FurryConventionRL.Core
 {
     public class DungeonMap : Map
     {
+        public List<Rectangle> Rooms;
+
+        public DungeonMap()
+        {
+            Rooms = new List<Rectangle>();
+        }
         public void Draw( RLConsole mapConsole )
         {
             mapConsole.Clear();
@@ -83,6 +90,12 @@ namespace FurryConventionRL.Core
                 return true;
             }
             return false;
+        }
+        public void AddPlayer(Player player)
+        {
+            Game.Player = player;
+            SetIsWalkable(player.X, player.Y, false);
+            UpdatePlayerFieldOfView();
         }
 
         public void SetIsWalkable ( int x, int y, bool isWalkable )

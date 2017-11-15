@@ -1,4 +1,8 @@
-﻿using RLNET;
+﻿using FurryConventionRL.Core;
+using FurryConventionRL.Systems;
+using RLNET;
+using RogueSharp.Random;
+using System;
 
 namespace FurryConventionRL
 {
@@ -26,26 +30,30 @@ namespace FurryConventionRL
 
         private static bool _renderRequired = true;
         public static Systems.CommandSystem CommandSystem { get; private set; }
-        public static Core.Player Player { get; private set; }
-        public static Core.DungeonMap DungeonMap { get; private set; }
-
+        public static Player Player { get; set; }
+        public static DungeonMap DungeonMap { get; private set; }
+        public static IRandom Random { get; private set; }
         public static void Main()
         {
             string fontFileName = "terminal8x8.png";
+
+            //establish seed for rng
+            int seed = (int) DateTime.UtcNow.Ticks;
+            Random = new DotNetRandom(seed);
+
             // Set the console window title
-            string consoleTitle = "FurConRL";
+            string consoleTitle = "FurConRL - Seed {seed}";
+
             //tell RLNet to use the bitmap font
             //  as well as tell it each tile is 8x8px
             _rootConsole = new RLRootConsole(fontFileName, _screenWidth, _screenHeight, 8, 8, 1f, consoleTitle);
-
             _mapConsole = new RLConsole(_mapWidth, _mapHeight);
             _messageConsole = new RLConsole(_messageWidth, _messageHeight);
             _statConsole = new RLConsole(_statWidth, _statHeight);
-
-            Player = new Core.Player();
+            
             CommandSystem = new Systems.CommandSystem();
 
-            Systems.MapGenerator mapGenerator = new Systems.MapGenerator(_mapWidth, _mapHeight);
+            MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 25, 10, 7);
             DungeonMap = mapGenerator.CreateMap();
 
             DungeonMap.UpdatePlayerFieldOfView();
