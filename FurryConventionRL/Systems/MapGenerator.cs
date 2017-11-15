@@ -1,5 +1,7 @@
 ﻿using FurryConventionRL.Core;
+using FurryConventionRL.Furries;
 using RogueSharp;
+using RogueSharp.DiceNotation;
 using System;
 using System.Linq;
 
@@ -120,6 +122,8 @@ namespace FurryConventionRL.Systems
 
             PlacePlayer();
 
+            PlaceFurries();
+
             return _map;
         }
 
@@ -132,6 +136,34 @@ namespace FurryConventionRL.Systems
                 for (int y = room.Top + 1; y < room.Bottom; y++)
                 {
                     _map.SetCellProperties(x, y, true, true, true);
+                }
+            }
+        }
+
+        private void PlaceFurries()
+        {
+            foreach (var room in _map.Rooms)
+            {
+                // Each room has a 60% chance of having monsters
+                if (Dice.Roll("1D10") < 7)
+                {
+                    // Generate between 1 and 4 monsters
+                    var numberOfFurries = Dice.Roll("1D4");
+                    for (int i = 0; i < numberOfFurries; i++)
+                    {
+                        // Find a random walkable location in the room to place the monster
+                        Point randomRoomLocation = _map.GetRandomWalkableLocationInRoom(room);
+                        // It's possible that the room doesn't have space to place a monster
+                        // In that case skip creating the monster
+                        if (randomRoomLocation != null)
+                        {
+                            // Temporarily hard code this monster to be created at level 1
+                            var furry = Fox.Create(1);
+                            furry.X = randomRoomLocation.X;
+                            furry.Y = randomRoomLocation.Y;
+                            _map.AddFurry(furry);
+                        }
+                    }
                 }
             }
         }

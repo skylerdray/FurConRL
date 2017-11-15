@@ -27,11 +27,12 @@ namespace FurryConventionRL
         private static readonly int _messageWidth = 70;
         private static readonly int _messageHeight = 20;
         private static RLConsole _messageConsole;
-
+        
         private static bool _renderRequired = true;
         public static Systems.CommandSystem CommandSystem { get; private set; }
         public static Player Player { get; set; }
         public static DungeonMap DungeonMap { get; private set; }
+        public static MessageLog MessageLog { get; private set; }
         public static IRandom Random { get; private set; }
         public static void Main()
         {
@@ -56,6 +57,11 @@ namespace FurryConventionRL
             MapGenerator mapGenerator = new MapGenerator(_mapWidth, _mapHeight, 25, 10, 7);
             DungeonMap = mapGenerator.CreateMap();
 
+            MessageLog = new MessageLog();
+            MessageLog.Add($"Level created with seed '{seed}'");
+            MessageLog.Add("The savior arrives on level 1");
+
+
             DungeonMap.UpdatePlayerFieldOfView();
             //handle RLNet's Update event
             _rootConsole.Update += OnRootConsoleUpdate;
@@ -68,9 +74,11 @@ namespace FurryConventionRL
         // event handler for Update event
         private static void OnRootConsoleUpdate(object sender, UpdateEventArgs e)
         {
-
+            
             bool didPlayerAct = false;
             RLKeyPress keyPress = _rootConsole.Keyboard.GetKeyPress();
+
+            
 
             if (keyPress != null)
             {
@@ -121,7 +129,6 @@ namespace FurryConventionRL
             _mapConsole.SetBackColor(0, 0, _mapWidth, _mapHeight, Core.Colors.FloorBackground);
 
             _messageConsole.SetBackColor(0, 0, _messageWidth, _messageHeight, Core.Swatch.DbDeepWater);
-            _messageConsole.Print(1, 1, "Messages", Core.Colors.TextHeading);
 
             _statConsole.SetBackColor(0, 0, _statWidth, _statHeight, Core.Swatch.DbOldStone);
              _statConsole.Print(1, 1, "Stats", Core.Colors.TextHeading);
@@ -135,7 +142,8 @@ namespace FurryConventionRL
             {
                 DungeonMap.Draw(_mapConsole);
                 Player.Draw(_mapConsole, DungeonMap);
-
+                Player.DrawStats(_statConsole);
+                MessageLog.Draw(_messageConsole);
 
 
                 RLConsole.Blit(_mapConsole, 0, 0, _mapWidth, _mapHeight,
