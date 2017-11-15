@@ -1,5 +1,7 @@
 # Furry Convention: the Roguelike
 
+TODO: add sick ass logo here
+
 ## Getting Started
 
 TODO: add build instructions
