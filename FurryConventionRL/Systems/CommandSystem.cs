@@ -32,6 +32,30 @@ namespace FurryConventionRL.Systems
                         x = Game.Player.X + 1;
                         break;
                     }
+                case Core.Direction.UpRight:
+                    {
+                        y = Game.Player.Y - 1;
+                        x = Game.Player.X + 1;
+                        break;
+                    }
+                case Core.Direction.UpLeft:
+                    {
+                        y = Game.Player.Y - 1;
+                        x = Game.Player.X - 1;
+                        break;
+                    }
+                case Core.Direction.DownRight:
+                    {
+                        y = Game.Player.Y + 1;
+                        x = Game.Player.X + 1;
+                        break;
+                    }
+                case Core.Direction.DownLeft:
+                    {
+                        y = Game.Player.Y + 1;
+                        x = Game.Player.X - 1;
+                        break;
+                    }
                 default:
                     {
                         return false;
